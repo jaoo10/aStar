@@ -4,7 +4,12 @@ def dist_between(current,neighbor):
     return 0
 
 def heuristic_cost_estimate(start,goal):
-    return 0
+    cost = 0
+    for i in range(len(start)):
+        for j in range(len(start[i])):
+            if start[i][j] != goal[i][j]:
+                cost += 1
+    return cost
 
 def reconstruct_path(cameFrom, goal):
     path = deque(goal)
