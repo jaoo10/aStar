@@ -12,7 +12,6 @@ def dist_between(current,neighbor):
                 return abs(firstPosition - secondPosition)
     return 0
 
-
 def heuristic_cost_estimate(start,goal):
     cost = 0
     for i in range(len(start)):
@@ -102,12 +101,17 @@ if __name__ == "__main__":
                 (  5, 10,  7,  4),
                 (  9, 14, 11,  8),
                 ( 13,  0, 15, 12))
+
+    example2 = ((2,0,3,4),(1,6,7,8),(5,9,10,11),(13,14,15,12))
+
+    example3 = ((2,6,8,3),(1,14,9,11),(7,12,13,0),(5,15,4,10))
+
     
     finalState = (( 1,  2,  3,  4),
                   ( 5,  6,  7,  8),
                   ( 9, 10, 11, 12),
                   (13, 14, 15,  0))
 
-    path = aStar(example1,finalState)
+    path = aStar(example3,finalState)
     printPath(path)
     print "%d Movimentos" % (len(path) - 1)
