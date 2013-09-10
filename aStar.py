@@ -22,8 +22,9 @@ def heuristic_cost_estimate(start,goal):
     return cost
 
 def reconstruct_path(cameFrom, goal):
-    path = deque(goal)
+    path = deque()
     node = goal
+    path.appendleft(node)
     while node in cameFrom:
         node = cameFrom[node]
         path.appendleft(node)
@@ -87,18 +88,26 @@ def aStar(start,goal):
                     openSet.add(neighbor)
     return 0
 
-
+def printPath(path):
+    for i in path:
+        for j in i:
+            for k in j:
+                print "%2d" % k,
+            print
+        print
+                
 
 if __name__ == "__main__":
-    initialState = (( 0, 15,  1,  2),
-                    ( 4,  3, 14, 13),
-                    ( 5,  7, 11, 12),
-                    (10,  8,  6,  9))
-
+    example1 = ((  1,  6,  2,  3),
+                (  5, 10,  7,  4),
+                (  9, 14, 11,  8),
+                ( 13,  0, 15, 12))
+    
     finalState = (( 1,  2,  3,  4),
                   ( 5,  6,  7,  8),
                   ( 9, 10, 11, 12),
                   (13, 14, 15,  0))
 
-    path = aStar(initialState,finalState)
-    print "%d Movimentos" % len(path)-1
+    path = aStar(example1,finalState)
+    printPath(path)
+    print "%d Movimentos" % (len(path) - 1)
