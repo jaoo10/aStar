@@ -20,7 +20,12 @@ def reconstruct_path(cameFrom, goal):
     return path
 
 def neighbor_nodes(current):
-    return {"middle", "end"}
+    for i in range(len(current)):
+        for j in range(len(current[i])):
+            if current[i][j] == 0:
+                nodes = []
+                if i-1 > 0
+
 
 def getLowest(openSet, fScore):
     lowest = float("inf")
