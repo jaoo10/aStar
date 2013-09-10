@@ -4,11 +4,15 @@ def dist_between(current,neighbor):
     return 0
 
 def heuristic_cost_estimate(start,goal):
-    return 0
+    cost = 0
+    for i in range(len(start)):
+        for j in range(len(start[i])):
+            if start[i][j] != goal[i][j]:
+                cost += 1
+    return cost
 
 def reconstruct_path(cameFrom, goal):
-    path = deque()
-    path.appendleft(goal)
+    path = deque(goal)
     node = goal
     while node in cameFrom:
         node = cameFrom[node]
@@ -16,7 +20,12 @@ def reconstruct_path(cameFrom, goal):
     return path
 
 def neighbor_nodes(current):
-    return {"middle", "end"}
+    for i in range(len(current)):
+        for j in range(len(current[i])):
+            if current[i][j] == 0:
+                nodes = []
+                if i-1 > 0
+
 
 def getLowest(openSet, fScore):
     lowest = float("inf")
@@ -53,10 +62,22 @@ def aStar(start,goal):
                     openSet.add(neighbor)
     return 0
 
+
+
 if __name__ == "__main__":
-    path = aStar("begin","end")
+    initialState = (( 0, 15,  1,  2),
+                    ( 4,  3, 14, 13),
+                    ( 5,  7, 11, 12),
+                    (10,  8,  6,  9))
+
+    finalState = (( 1,  2,  3,  4),
+                  ( 5,  6,  7,  8),
+                  ( 9, 10, 11, 12),
+                  (13, 14, 15,  0))
+
+    path = aStar(initialState,finalState)
     if path == 0:
         print "Failed"
     else:
         for node in path:
-            print(node),
+            print node
