@@ -1,7 +1,17 @@
 from collections import deque
 
 def dist_between(current,neighbor):
+    coord = []
+    for i in range(len(current)):
+        for j in range(len(current[i])):
+            if current[i][j] == 0 or neighbor[i][j] == 0:
+                coord.append([i,j])
+            if len(coord) == 2:
+                firstPosition = coord[0][0] * len(current) + coord[0][1]
+                secondPosition = coord[1][0] * len(current) + coord[1][1]
+                return abs(firstPosition - secondPosition)
     return 0
+
 
 def heuristic_cost_estimate(start,goal):
     cost = 0
@@ -19,13 +29,28 @@ def reconstruct_path(cameFrom, goal):
         path.appendleft(node)
     return path
 
+def makeMove(current,i,j,x,y):
+    lst = map(list,current)
+    temp = lst[x][y]
+    lst[x][y] = lst[i][j]
+    lst[i][j] = temp
+    return tuple(map(tuple,lst))
+
 def neighbor_nodes(current):
     for i in range(len(current)):
         for j in range(len(current[i])):
             if current[i][j] == 0:
                 nodes = []
-                if i-1 > 0
-
+                if i-1 >= 0:
+                    nodes.append(makeMove(current,i-1,j,i,j))
+                if i+1 < len(current):
+                    nodes.append(makeMove(current,i+1,j,i,j))
+                if j-1 >= 0:
+                    nodes.append(makeMove(current,i,j-1,i,j))
+                if j+1 < len(current[i]):
+                    nodes.append(makeMove(current,i,j+1,i,j))
+                return nodes
+    return []
 
 def getLowest(openSet, fScore):
     lowest = float("inf")
@@ -76,8 +101,4 @@ if __name__ == "__main__":
                   (13, 14, 15,  0))
 
     path = aStar(initialState,finalState)
-    if path == 0:
-        print "Failed"
-    else:
-        for node in path:
-            print node
+    print "%d Movimentos" % len(path)-1
