@@ -71,6 +71,10 @@ if __name__ == "__main__":
         path = puzzle.aStar(example2,finalState)
     elif sys.argv[1] == "3":
         path = puzzle.aStar(example3,finalState)
+    elif sys.argv[1] == "re4":
+        residentEvil4 = ((2,3,6),(5,0,8),(1,4,7))
+        residentEvil4Final = ((1,2,3),(4,5,6),(7,8,0))
+        path = puzzle.aStar(residentEvil4,residentEvil4Final)
 
     puzzle.printPath(path)
 
