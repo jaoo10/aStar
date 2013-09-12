@@ -1,3 +1,7 @@
+#!/usr/bin/python
+# Created by Joao A. Jesus Jr. <joao29a@gmail.com>
+#            Joao M. Velasques Faria
+
 from collections import deque
 
 class AStar:
