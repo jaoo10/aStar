@@ -1,7 +1,10 @@
-import AStar
+#!/usr/bin/python
+# Created by Joao A. Jesus Jr. <joao29a@gmail.com>
+#            Joao M. Velasques Faria
 import sys
+import AStar
 
-class FifteenPuzzle(AStar.AStar):
+class NumberPuzzle(AStar.AStar):
     def distBetween(self,current,neighbor):
         coord = []
         for i in range(len(current)):
@@ -55,26 +58,34 @@ class FifteenPuzzle(AStar.AStar):
         print "%d Movements" % (len(path) - 1)
 
 if __name__ == "__main__":
-    example1 = ((1,6,2,3),(5,10,7,4),(9,14,11,8),(13,0,15,12))
-    
-    example2 = ((2,0,3,4),(1,6,7,8),(5,9,10,11),(13,14,15,12))
-    
-    example3 = ((2,6,8,3),(1,14,9,11),(7,12,13,0),(5,15,4,10))
-    
-    finalState = ((1,2,3,4),(5,6,7,8),(9,10,11,12),(13,14,15,0))
-    
-    puzzle = FifteenPuzzle()
-    
-    if sys.argv[1] == "1":
-        path = puzzle.aStar(example1,finalState)
-    elif sys.argv[1] == "2":
-        path = puzzle.aStar(example2,finalState)
-    elif sys.argv[1] == "3":
-        path = puzzle.aStar(example3,finalState)
-    elif sys.argv[1] == "re4":
-        residentEvil4 = ((2,3,6),(5,0,8),(1,4,7))
-        residentEvil4Final = ((1,2,3),(4,5,6),(7,8,0))
-        path = puzzle.aStar(residentEvil4,residentEvil4Final)
+    if len(sys.argv) > 1:
+        finalState = ((1,2,3,4),(5,6,7,8),(9,10,11,12),(13,14,15,0))
 
-    puzzle.printPath(path)
+        puzzle = NumberPuzzle()
+
+        if sys.argv[1] == "1":
+            example1 = ((1,6,2,3),(5,10,7,4),(9,14,11,8),(13,0,15,12))
+            path = puzzle.aStar(example1,finalState)
+        
+        elif sys.argv[1] == "2":
+            example2 = ((2,0,3,4),(1,6,7,8),(5,9,10,11),(13,14,15,12))
+            path = puzzle.aStar(example2,finalState)
+        
+        elif sys.argv[1] == "3":
+            example3 = ((2,6,8,3),(1,14,9,11),(7,12,13,0),(5,15,4,10))
+            path = puzzle.aStar(example3,finalState)
+        
+        elif sys.argv[1] == "re4":
+            residentEvil4 = ((2,3,6),(5,0,8),(1,4,7))
+            residentEvil4Final = ((1,2,3),(4,5,6),(7,8,0))
+            path = puzzle.aStar(residentEvil4,residentEvil4Final)
+        
+        else:
+            print "Invalid arg."
+            sys.exit(0)
+        
+        puzzle.printPath(path)
+    
+    else:
+        print "Insert an arg. (1, 2, 3, or re4)"
 
