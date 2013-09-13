@@ -17,13 +17,25 @@ class NumberPuzzle(AStar.AStar):
                     return abs(firstPosition - secondPosition)
         return 0
 
-    def heuristicEstimate(self,start,goal):
+    '''def heuristicEstimate(self,start,goal):
         cost = 0
         for i in range(len(start)):
-            for j in range(len(start[i])):
-                if start[i][j] != goal[i][j]:
-                    cost += 1
-        return cost
+                for j in range(len(start[i])):
+                        if start[i][j] != goal[i][j]:
+                                cost += 1
+        return cost'''
+
+        def heuristicEstimate(self,start,goal):
+        cost = 0
+       for i in range(len(start)):
+               for j in range(len(start[i])):
+                       if (i+1) < len(start):
+                               if start[i][j] == 0:
+                                       continue
+                               if (start[i+1][j] == (start[i][j] + 1)):
+                                       cost+=1
+       return cost
+
 
     def neighborNodes(self,current):
         for i in range(len(current)):
