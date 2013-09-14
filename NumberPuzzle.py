@@ -2,6 +2,7 @@
 # Created by Joao A. Jesus Jr. <joao29a@gmail.com>
 #            Joao M. Velasques Faria
 import sys
+import math
 import AStar
 
 class NumberPuzzle(AStar.AStar):
@@ -12,30 +13,43 @@ class NumberPuzzle(AStar.AStar):
                 if current[i][j] == 0 or neighbor[i][j] == 0:
                     coord.append([i,j])
                 if len(coord) == 2:
-                    firstPosition = coord[0][0] * len(current) + coord[0][1]
-                    secondPosition = coord[1][0] * len(current) + coord[1][1]
-                    return abs(firstPosition - secondPosition)
+                    firstPosition = pow(coord[0][0] - coord[1][0],2)
+                    secondPosition = pow(coord[0][1] - coord[1][1],2)
+                    return math.sqrt(firstPosition + secondPosition)
         return 0
 
-    '''def heuristicEstimate(self,start,goal):
-        cost = 0
+    def firstHeuristic(self,start,goal,i,j):
+        if start[i][j] != goal[i][j]:
+            self.cost += 1
+
+    def secondHeuristic(self,start,goal,i,j):
+        if j + 1 < len(start[i]):
+            if start[i][j] != start[i][j+1] - 1:
+                self.cost += 1
+        elif i + 1 < len(start):
+            if start[i][j] != start[i+1][0] - 1:
+                self.cost += 1
+
+    def thirdHeuristic(self,start,goal,i,j):
+        if start[i][j] != goal[i][j]:
+            correctI = None
+            correctJ = None
+            if start[i][j] == 0:
+                correctI = len(start) - 1
+                correctJ = len(start[i]) - 1
+            else:
+                correctI = (start[i][j] - 1) / len(start)
+                correctJ = (start[i][j] - 1) % len(start[i])
+            self.cost += math.sqrt(pow(correctI - i,2) + pow(correctJ - j,2))
+
+    def heuristicEstimate(self,start,goal):
+        self.cost = 0
         for i in range(len(start)):
-                for j in range(len(start[i])):
-                        if start[i][j] != goal[i][j]:
-                                cost += 1
-        return cost'''
-
-        def heuristicEstimate(self,start,goal):
-        cost = 0
-       for i in range(len(start)):
-               for j in range(len(start[i])):
-                       if (i+1) < len(start):
-                               if start[i][j] == 0:
-                                       continue
-                               if (start[i+1][j] == (start[i][j] + 1)):
-                                       cost+=1
-       return cost
-
+            for j in range(len(start[i])):
+                self.firstHeuristic(start,goal,i,j)
+                self.secondHeuristic(start,goal,i,j)
+                self.thirdHeuristic(start,goal,i,j)
+        return self.cost
 
     def neighborNodes(self,current):
         for i in range(len(current)):
@@ -100,4 +114,3 @@ if __name__ == "__main__":
     
     else:
         print "Insert an arg. (1, 2, 3, or re4)"
-
