@@ -6,6 +6,9 @@ import math
 import AStar
 
 class NumberPuzzle(AStar.AStar):
+    def __init__(self,heuristic):
+        self.heuristic = heuristic
+
     def distBetween(self,current,neighbor):
         coord = []
         for i in range(len(current)):
@@ -46,9 +49,12 @@ class NumberPuzzle(AStar.AStar):
         self.cost = 0
         for i in range(len(start)):
             for j in range(len(start[i])):
-                self.firstHeuristic(start,goal,i,j)
-                self.secondHeuristic(start,goal,i,j)
-                self.thirdHeuristic(start,goal,i,j)
+                if self.heuristic & 0b1:
+                    self.firstHeuristic(start,goal,i,j)
+                if self.heuristic & 0b10:
+                    self.secondHeuristic(start,goal,i,j)
+                if self.heuristic & 0b100:
+                    self.thirdHeuristic(start,goal,i,j)
         return self.cost
 
     def neighborNodes(self,current):
@@ -84,33 +90,41 @@ class NumberPuzzle(AStar.AStar):
         print "%d Movements" % (len(path) - 1)
 
 if __name__ == "__main__":
-    if len(sys.argv) > 1:
-        finalState = ((1,2,3,4),(5,6,7,8),(9,10,11,12),(13,14,15,0))
+    finalState = ((1,2,3,4),(5,6,7,8),(9,10,11,12),(13,14,15,0))
+    
+    examples = {
+            1: ((1,6,2,3),(5,10,7,4),(9,14,11,8),(13,0,15,12)),
+            2: ((2,0,3,4),(1,6,7,8),(5,9,10,11),(13,14,15,12)),
+            3: ((2,6,8,3),(1,14,9,11),(7,12,13,0),(5,15,4,10)),
+            4: ((1,6,2,3),(5,10,7,0),(4,9,14,11),(8,13,15,12)),
+            5: ((1,6,2,3),(5,10,0,7),(4,9,14,11),(8,13,15,12)),
+            6: ((1,6,2,3),(5,0,10,7),(4,9,14,11),(8,13,15,12)),
+            7: ((1,6,2,3),(0,5,10,7),(4,9,14,11),(8,13,15,12)),
+            }
 
-        puzzle = NumberPuzzle()
-
-        if sys.argv[1] == "1":
-            example1 = ((1,6,2,3),(5,10,7,4),(9,14,11,8),(13,0,15,12))
-            path = puzzle.aStar(example1,finalState)
+    if len(sys.argv) > 2:
+        ex = int(sys.argv[1])
+        heuristic = None
         
-        elif sys.argv[1] == "2":
-            example2 = ((2,0,3,4),(1,6,7,8),(5,9,10,11),(13,14,15,12))
-            path = puzzle.aStar(example2,finalState)
+        try:
+            heuristic = int(sys.argv[2],2)
+        except:
+            print "Insert a binary number for the second arg."
+            sys.exit(1)
         
-        elif sys.argv[1] == "3":
-            example3 = ((2,6,8,3),(1,14,9,11),(7,12,13,0),(5,15,4,10))
-            path = puzzle.aStar(example3,finalState)
-        
-        elif sys.argv[1] == "re4":
-            residentEvil4 = ((2,3,6),(5,0,8),(1,4,7))
-            residentEvil4Final = ((1,2,3),(4,5,6),(7,8,0))
-            path = puzzle.aStar(residentEvil4,residentEvil4Final)
-        
+        if ex in examples:
+            try:
+                puzzle = NumberPuzzle(heuristic)
+                path = puzzle.aStar(examples[ex],finalState)
+                puzzle.printPath(path)
+            except:
+                print "Program interrupted."
+                sys.exit(1)
         else:
             print "Invalid arg."
-            sys.exit(0)
-        
-        puzzle.printPath(path)
     
     else:
-        print "Insert an arg. (1, 2, 3, or re4)"
+        print "Insert two args."
+        for keys in examples:
+            print keys,
+        print "\nAnd a binary number."
