@@ -3,6 +3,17 @@
 #            Joao M. Velasques Faria
 
 from collections import deque
+import heapq
+
+#This class is used to maintain a heap
+class Node:
+    def __init__(self,node,value):
+        self.node = node
+        self.value = value
+
+    #Operator overloading. Maintaining a min heap
+    def __lt__(self,other):
+       return self.value < other.value
 
 class AStar:
     def distBetween(self,current,neighbor):
@@ -23,25 +34,21 @@ class AStar:
             path.appendleft(node)
         return path
     
-    def getLowest(self,openSet,fScore):
-        lowest = float("inf")
-        lowestNode = None
-        for node in openSet:
-            if fScore[node] < lowest:
-                lowest = fScore[node]
-                lowestNode = node
-        return lowestNode
+    def getLowest(self,heapQueue):
+        return heapq.heappop(heapQueue).node
 
     def aStar(self,start,goal):
         cameFrom = {}
-        openSet = set([start])
+        openSet = {start}
         closedSet = set()
         gScore = {}
         fScore = {}
         gScore[start] = 0
         fScore[start] = gScore[start] + self.heuristicEstimate(start,goal)
+        heapQueue = [Node(start,fScore[start])]
         while len(openSet) != 0:
-            current = self.getLowest(openSet,fScore)
+            print len(openSet)
+            current = self.getLowest(heapQueue)
             if current == goal:
                 return self.reconstructPath(cameFrom,goal)
             openSet.remove(current)
@@ -55,5 +62,6 @@ class AStar:
                     gScore[neighbor] = tentative_gScore
                     fScore[neighbor] = gScore[neighbor] + self.heuristicEstimate(neighbor,goal)
                     if neighbor not in openSet:
+                        heapq.heappush(heapQueue,Node(neighbor,fScore[neighbor]))
                         openSet.add(neighbor)
         return 0
