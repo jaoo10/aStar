@@ -38,8 +38,7 @@ class NumberPuzzle(AStar.AStar):
             if start[i][j] != start[i+1][0] - 1:
                 self.cost2 += 1
 
-    #Manhattan distance + Euclidian distance 
-    #(the fastest, but not the best solution)
+    #Manhattan distance
     def thirdHeuristic(self,start,goal,i,j):
         if start[i][j] != goal[i][j]:
             correctI = None
@@ -51,7 +50,6 @@ class NumberPuzzle(AStar.AStar):
                 correctI = (start[i][j] - 1) / len(start)
                 correctJ = (start[i][j] - 1) % len(start[i])
             self.cost3 += abs(correctI - i) + abs(correctJ - j)
-            #self.cost3 += math.sqrt(pow(correctI - i,2) + pow(correctJ - j,2))
 
     def heuristicEstimate(self,start,goal):
         self.cost1 = 0
@@ -113,9 +111,9 @@ if __name__ == "__main__":
         try:
             example = getPuzzle(sys.argv[1])
             finalState = getPuzzle(sys.argv[2])
-            weight1 = int(sys.argv[3])
-            weight2 = int(sys.argv[4])
-            weight3 = int(sys.argv[5])
+            weight1 = float(sys.argv[3])
+            weight2 = float(sys.argv[4])
+            weight3 = float(sys.argv[5])
             puzzle = NumberPuzzle(weight1,weight2,weight3)
             path = puzzle.aStar(example,finalState)
             puzzle.printPath(path)

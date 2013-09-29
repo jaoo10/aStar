@@ -13,7 +13,7 @@ class Node:
 
     #Operator overloading. Maintaining a min heap
     def __lt__(self,other):
-       return self.value < other.value
+        return self.value < other.value
 
 class AStar:
     def distBetween(self,current,neighbor):
@@ -24,7 +24,7 @@ class AStar:
 
     def neighborNodes(self,current):
         pass
-    
+
     def reconstructPath(self,cameFrom,goal):
         path = deque()
         node = goal
@@ -33,7 +33,8 @@ class AStar:
             node = cameFrom[node]
             path.appendleft(node)
         return path
-    
+
+    #Return the root node (min value) and maintain the heap O(log n)
     def getLowest(self,heapQueue):
         return heapq.heappop(heapQueue).node
 
@@ -47,9 +48,9 @@ class AStar:
         fScore[start] = gScore[start] + self.heuristicEstimate(start,goal)
         heapQueue = [Node(start,fScore[start])]
         while len(openSet) != 0:
-            print len(openSet)
             current = self.getLowest(heapQueue)
             if current == goal:
+                print "OpenSet size: %d\n" % len(openSet)
                 return self.reconstructPath(cameFrom,goal)
             openSet.remove(current)
             closedSet.add(current)
