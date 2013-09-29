@@ -2,9 +2,19 @@
 # Created by Joao A. Jesus Jr. <joao29a@gmail.com>
 #            Joao M. Velasques Faria
 import sys
+import math
 import AStar
+import time
 
 class NumberPuzzle(AStar.AStar):
+    #Choose which heuristic to use, weight1 is the weight of the 1st heuristic
+    #and so on.
+    def __init__(self,weight1,weight2,weight3):
+        self.weight1 = weight1
+        self.weight2 = weight2
+        self.weight3 = weight3
+
+    #Manhattan distance of the empty square
     def distBetween(self,current,neighbor):
         coord = []
         for i in range(len(current)):
@@ -12,30 +22,49 @@ class NumberPuzzle(AStar.AStar):
                 if current[i][j] == 0 or neighbor[i][j] == 0:
                     coord.append([i,j])
                 if len(coord) == 2:
-                    firstPosition = coord[0][0] * len(current) + coord[0][1]
-                    secondPosition = coord[1][0] * len(current) + coord[1][1]
-                    return abs(firstPosition - secondPosition)
+                    firstPosition = abs(coord[0][0] - coord[1][0])
+                    secondPosition = abs(coord[0][1] - coord[1][1])
+                    return firstPosition + secondPosition
         return 0
 
-    '''def heuristicEstimate(self,start,goal):
-        cost = 0
+    def firstHeuristic(self,start,goal,i,j):
+        if start[i][j] != goal[i][j]:
+            self.cost1 += 1
+
+    def secondHeuristic(self,start,goal,i,j):
+        if j + 1 < len(start[i]):
+            if start[i][j] != start[i][j+1] - 1:
+                self.cost2 += 1
+        elif i + 1 < len(start):
+            if start[i][j] != start[i+1][0] - 1:
+                self.cost2 += 1
+
+    #Manhattan distance
+    def thirdHeuristic(self,start,goal,i,j):
+        if start[i][j] != goal[i][j]:
+            correctI = None
+            correctJ = None
+            if start[i][j] == 0:
+                correctI = len(start) - 1
+                correctJ = len(start[i]) - 1
+            else:
+                correctI = (start[i][j] - 1) / len(start)
+                correctJ = (start[i][j] - 1) % len(start[i])
+            self.cost3 += abs(correctI - i) + abs(correctJ - j)
+
+    def heuristicEstimate(self,start,goal):
+        self.cost1 = 0
+        self.cost2 = 0
+        self.cost3 = 0
         for i in range(len(start)):
-                for j in range(len(start[i])):
-                        if start[i][j] != goal[i][j]:
-                                cost += 1
-        return cost'''
-
-        def heuristicEstimate(self,start,goal):
-        cost = 0
-       for i in range(len(start)):
-               for j in range(len(start[i])):
-                       if (i+1) < len(start):
-                               if start[i][j] == 0:
-                                       continue
-                               if (start[i+1][j] == (start[i][j] + 1)):
-                                       cost+=1
-       return cost
-
+            for j in range(len(start[i])):
+                    self.firstHeuristic(start,goal,i,j)
+                    self.secondHeuristic(start,goal,i,j)
+                    self.thirdHeuristic(start,goal,i,j)
+        self.cost1 *= self.weight1
+        self.cost2 *= self.weight2
+        self.cost3 *= self.weight3
+        return self.cost1 + self.cost2 + self.cost3
 
     def neighborNodes(self,current):
         for i in range(len(current)):
@@ -61,43 +90,46 @@ class NumberPuzzle(AStar.AStar):
         return tuple(map(tuple,lst))
 
     def printPath(self,path):
+        openSetSize = path.pop()
+        closedSetSize = path.pop()
         for i in path:
             for j in i:
                 for k in j:
                     print "%2d" % k,
                 print
             print
-        print "%d Movements" % (len(path) - 1)
+        print("%s Movements" % "{:,}".format((len(path) - 1)))
+        print("OpenSet size: %s" % "{:,}".format(openSetSize))
+        print("ClosedSet size: %s" % "{:,}".format(closedSetSize))
+        print("Total nodes: %s" % "{:,}".format(openSetSize + closedSetSize))
+
+def getPuzzle(filename):
+    f = open(filename)
+    puzzle = []
+    for line in f:
+        puzzle.append(tuple(map(int,line.split())))
+    f.close()
+    return tuple(puzzle)
 
 if __name__ == "__main__":
-    if len(sys.argv) > 1:
-        finalState = ((1,2,3,4),(5,6,7,8),(9,10,11,12),(13,14,15,0))
-
-        puzzle = NumberPuzzle()
-
-        if sys.argv[1] == "1":
-            example1 = ((1,6,2,3),(5,10,7,4),(9,14,11,8),(13,0,15,12))
-            path = puzzle.aStar(example1,finalState)
+    argc = 5
+    if len(sys.argv) > argc:
+        try:
+            example = getPuzzle(sys.argv[1])
+            finalState = getPuzzle(sys.argv[2])
+            weight1 = float(sys.argv[3])
+            weight2 = float(sys.argv[4])
+            weight3 = float(sys.argv[5])
+            puzzle = NumberPuzzle(weight1,weight2,weight3)
+            timeInit = time.time()
+            path = puzzle.aStar(example,finalState)
+            timeEnd = time.time() - timeInit
+            puzzle.printPath(path)
+            print("Time: %f seconds" % timeEnd)
         
-        elif sys.argv[1] == "2":
-            example2 = ((2,0,3,4),(1,6,7,8),(5,9,10,11),(13,14,15,12))
-            path = puzzle.aStar(example2,finalState)
-        
-        elif sys.argv[1] == "3":
-            example3 = ((2,6,8,3),(1,14,9,11),(7,12,13,0),(5,15,4,10))
-            path = puzzle.aStar(example3,finalState)
-        
-        elif sys.argv[1] == "re4":
-            residentEvil4 = ((2,3,6),(5,0,8),(1,4,7))
-            residentEvil4Final = ((1,2,3),(4,5,6),(7,8,0))
-            path = puzzle.aStar(residentEvil4,residentEvil4Final)
-        
-        else:
-            print "Invalid arg."
-            sys.exit(0)
-        
-        puzzle.printPath(path)
+        except BaseException as error:
+            print(error)
+            sys.exit(1)
     
     else:
-        print "Insert an arg. (1, 2, 3, or re4)"
-
+        print "Insert %d args." % argc
