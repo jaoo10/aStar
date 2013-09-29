@@ -25,13 +25,15 @@ class AStar:
     def neighborNodes(self,current):
         pass
 
-    def reconstructPath(self,cameFrom,goal):
+    def reconstructPath(self,cameFrom,goal,closedSetSize,openSetSize):
         path = deque()
         node = goal
         path.appendleft(node)
         while node in cameFrom:
             node = cameFrom[node]
             path.appendleft(node)
+        path.append(closedSetSize)
+        path.append(openSetSize)
         return path
 
     #Return the root node (min value) and maintain the heap O(log n)
@@ -50,8 +52,7 @@ class AStar:
         while len(openSet) != 0:
             current = self.getLowest(heapQueue)
             if current == goal:
-                print "OpenSet size: %d\n" % len(openSet)
-                return self.reconstructPath(cameFrom,goal)
+                return self.reconstructPath(cameFrom,goal,len(closedSet),len(openSet))
             openSet.remove(current)
             closedSet.add(current)
             for neighbor in self.neighborNodes(current):

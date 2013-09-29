@@ -4,6 +4,7 @@
 import sys
 import math
 import AStar
+import time
 
 class NumberPuzzle(AStar.AStar):
     #Choose which heuristic to use, weight1 is the weight of the 1st heuristic
@@ -89,13 +90,18 @@ class NumberPuzzle(AStar.AStar):
         return tuple(map(tuple,lst))
 
     def printPath(self,path):
+        openSetSize = path.pop()
+        closedSetSize = path.pop()
         for i in path:
             for j in i:
                 for k in j:
                     print "%2d" % k,
                 print
             print
-        print "%d Movements" % (len(path) - 1)
+        print("%s Movements" % "{:,}".format((len(path) - 1)))
+        print("OpenSet size: %s" % "{:,}".format(openSetSize))
+        print("ClosedSet size: %s" % "{:,}".format(closedSetSize))
+        print("Total nodes: %s" % "{:,}".format(openSetSize + closedSetSize))
 
 def getPuzzle(filename):
     f = open(filename)
@@ -115,8 +121,11 @@ if __name__ == "__main__":
             weight2 = float(sys.argv[4])
             weight3 = float(sys.argv[5])
             puzzle = NumberPuzzle(weight1,weight2,weight3)
+            timeInit = time.time()
             path = puzzle.aStar(example,finalState)
+            timeEnd = time.time() - timeInit
             puzzle.printPath(path)
+            print("Time: %f seconds" % timeEnd)
         
         except BaseException as error:
             print(error)
