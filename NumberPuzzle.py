@@ -108,14 +108,14 @@ def getPuzzle(filename):
     return tuple(puzzle)
 
 if __name__ == "__main__":
-    finalState = ((1,2,3,4),(5,6,7,8),(9,10,11,12),(13,14,15,0))
-
-    if len(sys.argv) > 4:
+    argc = 5
+    if len(sys.argv) > argc:
         try:
             example = getPuzzle(sys.argv[1])
-            weight1 = int(sys.argv[2])
-            weight2 = int(sys.argv[3])
-            weight3 = int(sys.argv[4])
+            finalState = getPuzzle(sys.argv[2])
+            weight1 = int(sys.argv[3])
+            weight2 = int(sys.argv[4])
+            weight3 = int(sys.argv[5])
             puzzle = NumberPuzzle(weight1,weight2,weight3)
             path = puzzle.aStar(example,finalState)
             puzzle.printPath(path)
@@ -125,4 +125,4 @@ if __name__ == "__main__":
             sys.exit(1)
     
     else:
-        print "Insert four args."
+        print "Insert %d args." % argc
